@@ -57,7 +57,7 @@ app.get('/post/:id', async (req, res) => {
 });
 
 
-app.listen(Post, () => {
+app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 });
 
