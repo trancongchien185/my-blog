@@ -14,6 +14,8 @@ const homePageController = require("./controllers/homePage");
 const storePostController = require("./controllers/storePost");
 const getPostController = require('./controllers/getPost')
 const createUserController = require('./controllers/createUser')
+const storeUserController = require('./controllers/storeUser')
+const loginController = require('./controllers/login')
 
 const app = new express();
 
@@ -22,21 +24,22 @@ mongoose.connect("mongodb://localhost/node-js-blog");
 app.use(fileUpload());
 app.use(express.static("public"));
 app.use(expressEdge.engine);
-app.set("views", path.resolve(__dirname, "views"));
+app.set("views", `${__dirname}/views`);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const validateCreatePostMiddleware storePost = require('./middleware/storePost') ;
+const storePost = require('./middleware/storePost') ;
 
 app.use("/posts/store", storePost);
 
 app.get("/", homePageController);
-app.get('/auth/register', createUserController);
 app.get("/post/:id", getPostController)
 app.get("/posts/new", createPostController);
 app.post("/posts/store", storePostController);
-
+app.get('/auth/register', createUserController);
+app.post('/users/register', storeUserController)
+app.get('/auth/login', loginController);
 
 app.get("/about", (req, res) => {
   res.render("about");
