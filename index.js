@@ -1,17 +1,19 @@
 const express = require("express");
 
 const expressEdge = require("express-edge");
-const path = require("path");
+const Post = require("./database/models/Post");
 
 const port = 3000;
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
-const Post = require("./database/models/Post");
+
 
 const createPostController = require("./controllers/createPost");
 const homePageController = require("./controllers/homePage");
 const storePostController = require("./controllers/storePost");
+const getPostController = require('./controllers/getPost')
+const createUserController = require('./controllers/createUser')
 
 const app = new express();
 
@@ -25,24 +27,16 @@ app.set("views", path.resolve(__dirname, "views"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const validateCreatePostMiddleware = (req, res, next) => {
-  if (
-    !req.files.image ||
-    !req.body.username ||
-    !req.body.title ||
-    !req.body.subtitle ||
-    !req.body.content
-  ) {
-    return res.redirect("/posts/new");
-  }
-  next();
-};
+const validateCreatePostMiddleware storePost = require('./middleware/storePost') ;
 
-app.use("/posts/store", validateCreatePostMiddleware);
+app.use("/posts/store", storePost);
 
 app.get("/", homePageController);
+app.get('/auth/register', createUserController);
+app.get("/post/:id", getPostController)
 app.get("/posts/new", createPostController);
 app.post("/posts/store", storePostController);
+
 
 app.get("/about", (req, res) => {
   res.render("about");
