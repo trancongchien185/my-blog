@@ -1,24 +1,24 @@
-const express = require("express");
-
 const expressEdge = require("express-edge");
-const Post = require("./database/models/Post");
-
-const port = 3000;
+const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
-
+const expressSession = require('express-session');
 
 const createPostController = require("./controllers/createPost");
 const homePageController = require("./controllers/homePage");
 const storePostController = require("./controllers/storePost");
-const getPostController = require('./controllers/getPost')
-const createUserController = require('./controllers/createUser')
-const storeUserController = require('./controllers/storeUser')
-const loginController = require('./controllers/login')
+const getPostController = require("./controllers/getPost");
+const createUserController = require("./controllers/createUser");
+const storeUserController = require("./controllers/storeUser");
+const loginController = require("./controllers/login");
 const loginUserController = require('./controllers/loginUser')
 
 const app = new express();
+
+app.use(expressSession({
+  secret: 'secret'
+}))
 
 mongoose.connect("mongodb://localhost/node-js-blog");
 
@@ -30,38 +30,19 @@ app.set("views", `${__dirname}/views`);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const storePost = require('./middleware/storePost') ;
+const storePost = require("./middleware/storePost");
 
 app.use("/posts/store", storePost);
 
 app.get("/", homePageController);
-app.get("/post/:id", getPostController)
+app.get("/post/:id", getPostController);
 app.get("/posts/new", createPostController);
 app.post("/posts/store", storePostController);
-app.get('/auth/register', createUserController);
-app.post('/users/login', loginUserController);
-app.post('/users/register', storeUserController)
 app.get('/auth/login', loginController);
+app.post('/users/login', loginUserController)
+app.get("/auth/register", createUserController);
+app.post("/users/register", storeUserController);
 
-app.get("/about", (req, res) => {
-  res.render("about");
-});
-
-app.get("/contact", (req, res) => {
-  res.render("contact");
-});
-
-app.get("/post/:id", async (req, res) => {
-  const post = await Post.findById(req.params.id);
-  res.render("post", {
-    post,
-  });
-});
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-
-app.get("/posts/new", (req, res) => {
-  res.render("create");
+app.listen(4000, () => {
+  console.log("App listening on port 4000");
 });

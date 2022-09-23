@@ -5,10 +5,6 @@ const PostSchema = new mongoose.Schema({
   subtitle: String,
   content: String,
   username: String,
-  createdAt: {
-    type: Date,
-    default: new Date(),
-  },
   image: String,
   createdAt: {
     type: Date,
